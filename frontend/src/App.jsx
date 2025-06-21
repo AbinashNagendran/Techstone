@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
+import { statsData } from './data/statsData'
+
 import './App.css'
 
 function App() {
@@ -10,13 +12,26 @@ function App() {
       <Sidebar />
       <main className="main-content">
         <header className="main-header">
-          <button 
-            className="menu-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            ☰
-          </button>
-          <h1>Welcome to TechStone</h1>
+        <div className="prompt-input-container">
+              <input 
+                type="text" 
+                placeholder="Enter your prompt here..." 
+                className="prompt-input"
+              />
+            </div>
+          <div className="logo-container">
+            <h1>Stores</h1>
+
+            <button className="store-btn">
+              <img src="/company_icons/Amazon-512.webp" alt="Amazon" />
+            </button>
+            <button className="store-btn">
+              <img src="/company_icons/bestbuy_circle.png" alt="Best Buy" />
+            </button>
+            <button className="store-btn">
+              <img src="/company_icons/canada_computer_logo.png" alt="Canada Computer" />
+            </button>
+          </div>
         </header>
         
         <div className="content">
@@ -24,18 +39,13 @@ function App() {
             <h2>Dashboard</h2>
             <p>add products here</p>
             <div className="stats-grid">
-              <div className="stat-card">
-                <h3>Pc 1</h3>
-                <p className="stat-number">1200$</p>
-              </div>
-              <div className="stat-card">
-                <h3>Pc 2 </h3>
-                <p className="stat-number">1400$</p>
-              </div>
-              <div className="stat-card">
-                <h3>Pc 3</h3>
-                <p className="stat-number">500$</p>
-              </div>
+              {statsData.map((stat) => (
+                <div key={stat.id} className="stat-card">
+                  <a href={stat.link}>{stat.title}</a>
+                  <p className="stat-number">{stat.value}</p>
+                  <img  className='stat-image' src={stat.image} alt="" />
+                </div>
+              ))}
             </div>
           </div>
         </div>

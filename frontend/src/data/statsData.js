@@ -1,0 +1,10 @@
+// Statistics data for the dashboard
+export const statsData = [
+  { id: 1, title: 'Pc 1', value: '1200$', image: "https://merchandising-assets.bestbuy.ca/bltc8653f66842bff7f/blt2ddbb70163a69634/68543b97a1401313329decf1/wi-20250620-feature-grid-1-fg-bfis-promo-offer-m.png?quality=80&auto=webp", link: "https://www.bestbuy.ca/en-ca/product/google-pixel-9-128gb-obsidian-unlocked/18165476"},
+  { id: 2, title: 'Pc 2', value: '1400$', image: "https://multimedia.bbycastatic.ca/multimedia/products/500x500/184/18484/18484001.png", link: "https://www.bestbuy.ca/en-ca/product/quoted-tech-clarity-gaming-custom-pc-black-ex-ryzen-7-5700x-rtx-5060-1tb-ssd-32gb-ram-windows-11-ai-ready-1-year-warranty/18484001?icmp=Recos_3across_tp_sllng_prdcts_plp&referrer=PLP+Top+Seller"},
+  { id: 3, title: 'Pc 3', value: '500$', image: "https://multimedia.bbycastatic.ca/multimedia/products/500x500/192/19277/19277166.jpg", link: "https://www.bestbuy.ca/en-ca/product/msi-aegis-gaming-pc-amd-ryzen-r9-9900x-32gb-ram-2tb-ssd-rtx-5070-windows-11/19277166"},
+  { id: 4, title: 'Pc 4', value: '500$', image: "https://multimedia.bbycastatic.ca/multimedia/products/500x500/174/17405/17405393.jpeg", link: "https://www.bestbuy.ca/en-ca/category/gaming-desktop-computers/30441"},
+
+
+
+]; 

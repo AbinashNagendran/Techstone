@@ -6,9 +6,7 @@ const Sidebar = () => {
     { id: 1, label: 'Best Sellers ', icon: '😘' },
     { id: 2, label: 'Price Range', icon: '😁' },
     { id: 3, label: 'Ai Assistant', icon: '🤖' },
-    { id: 4, label: 'Settings', icon: '⚙️' },
-    { id: 5, label: 'Profile', icon: '👤' },
-    { id: 6, label: 'Help', icon: '❓' }
+    { id: 4, label: 'Profile', icon: '👤' },
   ];
 
   return (
