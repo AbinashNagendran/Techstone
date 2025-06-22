@@ -5,8 +5,6 @@ const Sidebar = () => {
   const menuItems = [
     { id: 1, label: 'Best Sellers ', icon: '😘' },
     { id: 2, label: 'Price Range', icon: '😁' },
-    { id: 3, label: 'Ai Assistant', icon: '🤖' },
-    { id: 4, label: 'Profile', icon: '👤' },
   ];
 
   return (
@@ -28,15 +26,6 @@ const Sidebar = () => {
         </ul>
       </nav>
       
-      <div className="sidebar-footer">
-        <div className="user-info">
-          <div className="user-avatar">😂</div>
-          <div className="user-details">
-            <div className="user-name">Abinash Nagendran</div>
-            <div className="user-role">Admin</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
