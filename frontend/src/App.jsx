@@ -1,21 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './components/Sidebar'
 import { statsData } from './data/statsData'
-import { GoogleGenAI } from "@google/genai";
-
-
-// const ai = new GoogleGenAI({ apiKey: "AIzaSyBxbvgyoYiE3yuhWttntABFfcFsPDrFJe8" });
-
-// async function main() {
-//   const response = await ai.models.generateContent({
-//     model: "gemini-2.5-flash",
-//     contents: "Explain how AI works in a few words",
-//   });
-//   console.log(response.text);
-// }
-
-// main();
-
 
 
 import './App.css'
