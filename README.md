@@ -8,13 +8,16 @@ This is the point of TechStone, having a collection of popular websites for pre-
 We plan on having features that are not incorprated in these popular websites like AI assistance to pin point your desired 
 PC. 
 
+Features to add
+- Scraping the 3 websites (in progress)
+- Currency converter
+- Image transparency
+- AI chatbox assistant
 
-Still currently building the website, still implementing features on the frontend and making algorithims to scrape the 
-websites for the listings. 
 
 Here is what it looks like as of right now. 
 
-![Project snapshot](snapshots/snapshot1.png)
+![Project snapshot](snapshots/snapshot2.png)
 
 
 
