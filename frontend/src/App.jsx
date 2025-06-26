@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar'
 import { statsData } from './data/statsData'
 
@@ -9,7 +9,32 @@ function App() {
   const [inputValue, setInputValue] = useState('');
   const [filteredData, setFilteredData] = useState(statsData);
 
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (searchTerm) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          const newFilteredData = statsData.filter(stat =>
+            stat.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          setFilteredData(newFilteredData);
+        }, 100); // waiting 100ms after user stops typing
+      };
+    })(),
+    []
+  );
+
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      setFilteredData(statsData); // empty search = show everything
+    } else {
+      debouncedSearch(inputValue);
+    }
+  }, [inputValue, debouncedSearch]);
+
   const handleKeyDown = (event) => {
+    // bypass the 100ms delay search just search instantly
     if (event.key === 'Enter') {
       const newFilteredData = statsData.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
