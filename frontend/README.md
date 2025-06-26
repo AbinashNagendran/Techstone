@@ -1,1 +1,1 @@
-Implementation for web scraping will go here (Currently in progress)
+Frontend using purely React
