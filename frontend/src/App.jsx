@@ -17,19 +17,13 @@ function App() {
       setSuggestions([]);
       setFilteredData(statsData);
     } else {
+      // Simplified filtering for instant suggestions
       const matchingProducts = statsData.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
       
-      // Create suggestions from matching products
-      const newSuggestions = matchingProducts.map(stat => ({
-        id: stat.id,
-        title: stat.title,
-        type: 'product'
-      }));
-      
-      setSuggestions(newSuggestions);
-      // Don't filter the main display - keep showing all products
+      // Create suggestions directly without extra mapping
+      setSuggestions(matchingProducts);
       setFilteredData(statsData);
     }
   }, [inputValue]);
@@ -37,7 +31,7 @@ function App() {
   const handleSuggestionClick = (suggestion) => {
     setInputValue(suggestion.title);
     setShowSuggestions(false);
-    // Only filter the main display when a suggestion is selected
+    // Filter main display when suggestion is selected
     const selectedProduct = statsData.filter(stat =>
       stat.title.toLowerCase().includes(suggestion.title.toLowerCase())
     );
@@ -54,6 +48,11 @@ function App() {
     // Delay hiding suggestions to allow clicking on them
     setTimeout(() => setShowSuggestions(false), 200);
   };
+
+  // Show suggestions whenever there are suggestions available
+  useEffect(() => {
+    setShowSuggestions(suggestions.length > 0);
+  }, [suggestions]);
 
   return (
     <div className="app">
