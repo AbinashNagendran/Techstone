@@ -51,12 +51,27 @@ function App() {
         <div className="content">
           <div className="welcome-card">
             <h2>Pre-Builts</h2>
-            <p>Customize your search using the filters</p>
+            <h4 className='welcome-subtitle'>Customize your search using the filters</h4>
             <div className="stats-grid">
               {filteredData.map((stat) => (
                 <div key={stat.id} className="stat-card">
+                  {stat.salePrice > 0 && (
+                    <img className="sale-image" src="/frontend_images/onSale.png" alt="Sale" />
+                  )}
                   <a href={stat.link}>{stat.title}</a>
-                  <p className="stat-number">{stat.value}</p>
+                  <p className="stat-number">
+                    {stat.salePrice > 0
+                      ? (
+                        <span className="sale-info">
+                          {stat.salePrice + "$"}
+                          <span className="discount-text">
+                            {Math.round(((stat.regularPrice - stat.salePrice) / stat.regularPrice) * 100)}% OFF
+                          </span>
+                        </span>
+                      )
+                      : stat.regularPrice + "$"
+                    }
+                  </p>
                   <img  className='stat-image' src={stat.image} alt="" />
                 </div>
               ))}

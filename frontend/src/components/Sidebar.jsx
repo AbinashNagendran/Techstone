@@ -3,8 +3,8 @@ import './Sidebar.css';
 
 const Sidebar = () => {
   const menuItems = [
-    { id: 1, label: 'Best Sellers ', icon: '😘' },
-    { id: 2, label: 'Price Range', icon: '😁' },
+    { id: 1, label: 'Best Sellers ', icon: '🔥' },
+    { id: 2, label: 'Price Range', icon: '💲' },
   ];
 
   return (
