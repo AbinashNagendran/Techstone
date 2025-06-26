@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar'
 import { statsData } from './data/statsData'
 
@@ -8,14 +8,51 @@ import './App.css'
 function App() {
   const [inputValue, setInputValue] = useState('');
   const [filteredData, setFilteredData] = useState(statsData);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      const newFilteredData = statsData.filter(stat =>
+  // Generate suggestions based on input
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      setSuggestions([]);
+      setFilteredData(statsData);
+    } else {
+      const matchingProducts = statsData.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
-      setFilteredData(newFilteredData);
+      
+      // Create suggestions from matching products
+      const newSuggestions = matchingProducts.map(stat => ({
+        id: stat.id,
+        title: stat.title,
+        type: 'product'
+      }));
+      
+      setSuggestions(newSuggestions);
+      // Don't filter the main display - keep showing all products
+      setFilteredData(statsData);
     }
+  }, [inputValue]);
+
+  const handleSuggestionClick = (suggestion) => {
+    setInputValue(suggestion.title);
+    setShowSuggestions(false);
+    // Only filter the main display when a suggestion is selected
+    const selectedProduct = statsData.filter(stat =>
+      stat.title.toLowerCase().includes(suggestion.title.toLowerCase())
+    );
+    setFilteredData(selectedProduct);
+  };
+
+  const handleInputFocus = () => {
+    if (suggestions.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay hiding suggestions to allow clicking on them
+    setTimeout(() => setShowSuggestions(false), 200);
   };
 
   return (
@@ -30,8 +67,23 @@ function App() {
                 className="prompt-input"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
               />
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="suggestions-dropdown">
+                  {suggestions.map((suggestion) => (
+                    <div
+                      key={suggestion.id}
+                      className="suggestion-item"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      <span className="suggestion-icon">🔍</span>
+                      <span className="suggestion-text">{suggestion.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
           </div>
           <div className="logo-container">
             <h1>Stores</h1>
