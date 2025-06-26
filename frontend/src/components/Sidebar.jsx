@@ -1,11 +1,21 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ onBestSellersClick, onShowAllClick }) => {
   const menuItems = [
     { id: 1, label: 'Best Sellers ', icon: '🔥' },
-    { id: 2, label: 'Price Range', icon: '💲' },
+    { id: 2, label: 'Show All', icon: '📋' },
   ];
+
+  const handleButtonClick = (itemId) => {
+    if (itemId === 1) {
+      // Best Sellers button clicked
+      onBestSellersClick();
+    } else if (itemId === 2) {
+      // Show All button clicked
+      onShowAllClick();
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -17,10 +27,13 @@ const Sidebar = () => {
         <ul className="nav-list">
           {menuItems.map((item) => (
             <li key={item.id} className="nav-item">
-              <a href="#" className="nav-link">
+              <button 
+                className="nav-button"
+                onClick={() => handleButtonClick(item.id)}
+              >
                 <span className="nav-icon">{item.icon}</span>
                 <span className="nav-label">{item.label}</span>
-              </a>
+              </button>
             </li>
           ))}
         </ul>

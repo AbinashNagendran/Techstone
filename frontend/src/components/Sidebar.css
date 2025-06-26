@@ -40,7 +40,7 @@
   margin: 0;
 }
 
-.nav-link {
+.nav-button {
   display: flex;
   align-items: center;
   padding: 15px 20px;
@@ -48,13 +48,27 @@
   text-decoration: none;
   transition: all 0.3s ease;
   border-left: 3px solid transparent;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
 }
 
-.nav-link:hover {
+.nav-button:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #ecf0f1;
   border-left-color: #3498db;
   transform: translateX(5px);
+}
+
+.nav-button:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ecf0f1;
+  border-left-color: #3498db;
 }
 
 .nav-icon {
@@ -134,7 +148,7 @@
     width: 100%;
   }
   
-  .nav-link {
+  .nav-button {
     padding: 18px 20px;
   }
   

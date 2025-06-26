@@ -43,9 +43,20 @@ function App() {
     }
   };
 
+  // Function to filter best sellers (rating >= 4.0)
+  const filterBestSellers = () => {
+    const bestSellers = statsData.filter(stat => stat.rating >= 4.0);
+    setFilteredData(bestSellers);
+  };
+
+  // Function to show all products
+  const showAllProducts = () => {
+    setFilteredData(statsData);
+  };
+
   return (
     <div className="app">
-      <Sidebar />
+      <Sidebar onBestSellersClick={filterBestSellers} onShowAllClick={showAllProducts} />
       <main className="main-content">
         <header className="main-header">
           <div className="prompt-input-container">
