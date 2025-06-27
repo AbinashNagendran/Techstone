@@ -8,8 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import math
 import requests
-
-
+import json
+from pathlib import Path
 
 
 
@@ -88,9 +88,9 @@ try:
         a3.append(link)
         a3.append(img)
         a2.append(a3)
-    print(a2)
-    with open("listings.txt", "w") as f:
-        f.write(str(a2))
+    json_converted = json.dumps(a2)
+    with open("scripts/listings.txt", "w", encoding="utf-8") as f:
+        f.write(str(json_converted))
         f.write("\n\n\n")
     f.close()
 except Exception as e:
@@ -177,8 +177,9 @@ try:
         a3.append(float(ratings))
         a3.append(int(reviews))
         a2.append(a3)
-    with open("listings.txt", "a") as f:
-        f.write(str(a2))
+    json_converted = json.dumps(a2)
+    with open("scripts/listings.txt", "a") as f:
+        f.write(str(json_converted))
         f.write("\n\n\n")
     f.close()
 except Exception as e:
@@ -314,8 +315,9 @@ for i in a:
     a3.append(review)
     a6.append(a3)
     #print(a1)
-with open("listings.txt", "a") as f:
-    f.write(str(a6))
+json_converted = json.dumps(a6)
+with open("scripts/listings.txt", "a") as f:
+    f.write(str(json_converted))
     f.write("\n\n\n")
 f.close()
 
