@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage, clearChatHistory } from '../services/geminiService.js';
 
-const AIChat = ({ onProductsFiltered, messages, onMessagesChange }) => {
+const AIChat = ({ onProductsFiltered, messages, onMessagesChange, selectedCurrency = 'USD' }) => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,8 +51,9 @@ const AIChat = ({ onProductsFiltered, messages, onMessagesChange }) => {
       const messagesWithLoading = [...updatedMessages, loadingMessage];
       onMessagesChange(messagesWithLoading);
 
-      // Send message to AI
-      const response = await sendMessage(userMessage.content);
+      // Send message to AI with currency context
+      const messageWithCurrency = `${inputValue.trim()} (Please show prices in ${selectedCurrency})`;
+      const response = await sendMessage(messageWithCurrency);
 
       // Remove loading message and add AI response
       const messagesWithoutLoading = messagesWithLoading.filter(msg => !msg.isLoading);
@@ -124,6 +125,9 @@ What are you looking for today?`,
       <div className="ai-search-header">
         <h2>🤖 AI Search Assistant</h2>
         <p>Ask me to find specific products, filter by price, or get recommendations!</p>
+        <div className="ai-currency-info">
+          <span>💱 Showing prices in {selectedCurrency}</span>
+        </div>
         {messages.length > 1 && (
           <div className="chat-status">
             <span className="chat-status-text">💬 Chat history preserved</span>

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar'
 import AIChat from './components/AIChat'
+import CurrencySelector from './components/CurrencySelector'
 import { statsData } from './data/statsData'
-
+import { convertProductPrices, formatPrice, getUserCurrency } from './services/currencyService'
 
 import './App.css'
 
@@ -10,6 +11,8 @@ function App() {
   const [inputValue, setInputValue] = useState('');
   const [filteredData, setFilteredData] = useState(statsData);
   const [showAISearch, setShowAISearch] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [convertedData, setConvertedData] = useState(statsData);
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
@@ -25,6 +28,22 @@ What are you looking for today?`,
       timestamp: new Date()
     }
   ]);
+
+  // Initialize currency on component mount
+  useEffect(() => {
+    const userCurrency = getUserCurrency();
+    setSelectedCurrency(userCurrency);
+  }, []);
+
+  // Convert prices when currency changes
+  useEffect(() => {
+    const convertPrices = async () => {
+      const converted = await convertProductPrices(filteredData, selectedCurrency);
+      setConvertedData(converted);
+    };
+    
+    convertPrices();
+  }, [filteredData, selectedCurrency]);
 
   const debouncedSearch = useCallback(
     (() => {
@@ -90,6 +109,11 @@ What are you looking for today?`,
     setChatMessages(messages);
   };
 
+  // Function to handle currency change
+  const handleCurrencyChange = (currency) => {
+    setSelectedCurrency(currency);
+  };
+
   return (
     <div className="app">
       <Sidebar 
@@ -113,7 +137,7 @@ What are you looking for today?`,
           )}
           <div className="logo-container">
             <h1>Stores</h1>
-
+            <CurrencySelector onCurrencyChange={handleCurrencyChange} />
             <button className="store-btn">
               <img src="/company_icons/Amazon-512.webp" alt="Amazon" />
             </button>
@@ -132,13 +156,14 @@ What are you looking for today?`,
               onProductsFiltered={handleAIProductsFiltered}
               messages={chatMessages}
               onMessagesChange={handleChatMessages}
+              selectedCurrency={selectedCurrency}
             />
           ) : (
             <div className="welcome-card">
               <h2>Pre-Builts</h2>
               <h4 className='welcome-subtitle'>Customize your search using the filters</h4>
               <div className="stats-grid">
-                {filteredData.map((stat) => (
+                {convertedData.map((stat) => (
                   <div key={stat.id} className="stat-card">
                     {stat.salePrice > 0 && (
                       <img className="sale-image" src="/frontend_images/onSale.png" alt="Sale" />
@@ -148,13 +173,13 @@ What are you looking for today?`,
                       {stat.salePrice > 0
                         ? (
                           <span className="sale-info">
-                            {stat.salePrice + "$"}
+                            {formatPrice(stat.salePrice, selectedCurrency)}
                             <span className="discount-text">
                               {Math.round(((stat.regularPrice - stat.salePrice) / stat.regularPrice) * 100)}% OFF
                             </span>
                           </span>
                         )
-                        : stat.regularPrice + "$"
+                        : formatPrice(stat.regularPrice, selectedCurrency)
                       }
                     </p>
                     <img  className='stat-image' src={stat.image} alt="" />

@@ -1067,16 +1067,33 @@
 }
 
 .chat-status-text {
-  color: #27ae60;
   font-size: 0.9rem;
+  color: #27ae60;
   font-weight: 500;
+}
+
+.ai-currency-info {
+  background: #3498db;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 10px 0;
+  display: inline-block;
+}
+
+.ai-currency-info span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .message-time {
   font-size: 0.75rem;
   color: #95a5a6;
   margin-top: 8px;
-  text-align: right;
+  opacity: 0.8;
 }
 
 .error-message {
