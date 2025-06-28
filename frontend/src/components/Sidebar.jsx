@@ -1,10 +1,11 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onBestSellersClick, onShowAllClick }) => {
+const Sidebar = ({ onBestSellersClick, onShowAllClick, onAISearchClick }) => {
   const menuItems = [
     { id: 1, label: 'Best Sellers ', icon: '🔥' },
     { id: 2, label: 'Show All', icon: '📋' },
+    { id: 3, label: 'AI Search', icon: '🤖' },
   ];
 
   const handleButtonClick = (itemId) => {
@@ -14,6 +15,9 @@ const Sidebar = ({ onBestSellersClick, onShowAllClick }) => {
     } else if (itemId === 2) {
       // Show All button clicked
       onShowAllClick();
+    } else if (itemId === 3) {
+      // AI Search button clicked
+      onAISearchClick();
     }
   };
 
