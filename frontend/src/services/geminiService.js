@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GEMINI_API_KEY, GEMINI_CONFIG, GEMINI_MODEL } from '../config/gemini.js';
 import { statsData } from '../data/statsData.js';
+const allProducts = statsData.flat();
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -12,7 +13,7 @@ const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 const SYSTEM_PROMPT = `You are an AI shopping assistant for TechStone, a computer hardware store. You help users find the best pre-built computers based on their needs.
 
 Available products data:
-${JSON.stringify(statsData, null, 2)}
+${JSON.stringify(allProducts, null, 2)}
 
 Your capabilities:
 1. Filter products by price range (e.g., "PCs under $1500")
@@ -127,7 +128,7 @@ const processAIResponse = (response) => {
   let processedResponse = response;
   
   // Find all products mentioned in the response
-  statsData.forEach(product => {
+  allProducts.forEach(product => {
     const productTitle = product.title;
     
     // Create a regex to match the product title (case insensitive)
@@ -175,7 +176,7 @@ const extractProductsFromResponse = (response) => {
   const products = [];
   
   // Look for product titles in the response
-  statsData.forEach(product => {
+  allProducts.forEach(product => {
     if (response.toLowerCase().includes(product.title.toLowerCase())) {
       products.push(product);
     }
