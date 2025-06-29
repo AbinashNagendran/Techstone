@@ -8,7 +8,7 @@ import './App.css'
 
 function App() {
   const [inputValue, setInputValue] = useState('');
-  const [filteredData, setFilteredData] = useState(statsData);
+  const [filteredData, setFilteredData] = useState(statsData.flat());
   const [showAISearch, setShowAISearch] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -32,7 +32,9 @@ What are you looking for today?`,
       return (searchTerm) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
-          const newFilteredData = statsData.filter(stat =>
+          // Flatten all products from all stores and then filter
+          const allProducts = statsData.flat();
+          const newFilteredData = allProducts.filter(stat =>
             stat.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
           setFilteredData(newFilteredData);
@@ -44,16 +46,17 @@ What are you looking for today?`,
 
   useEffect(() => {
     if (inputValue.trim() === '') {
-      setFilteredData(statsData); // empty search = show everything
+      setFilteredData(statsData.flat()); // Show all data if search is empty
     } else {
       debouncedSearch(inputValue);
     }
   }, [inputValue, debouncedSearch]);
 
   const handleKeyDown = (event) => {
-    // bypass the 100ms delay search just search instantly
     if (event.key === 'Enter') {
-      const newFilteredData = statsData.filter(stat =>
+      // Clear the timeout and search immediately
+      const allProducts = statsData.flat();
+      const newFilteredData = allProducts.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
       setFilteredData(newFilteredData);
@@ -63,14 +66,15 @@ What are you looking for today?`,
   // Function to filter best sellers (rating >= 4.0)
   const filterBestSellers = () => {
     setShowAISearch(false); // Exit AI Search mode
-    const bestSellers = statsData.filter(stat => stat.rating >= 4.0);
+    const allProducts = statsData.flat();
+    const bestSellers = allProducts.filter(stat => stat.rating >= 4.0);
     setFilteredData(bestSellers);
   };
 
   // Function to show all products
   const showAllProducts = () => {
     setShowAISearch(false); // Exit AI Search mode
-    setFilteredData(statsData);
+    setFilteredData(statsData.flat());
   };
 
   // Function to handle AI Search
