@@ -1,0 +1,136 @@
+.currency-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.currency-selector-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #2c3e50;
+  color: white;
+  border: 1px solid #34495e;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.currency-selector-button:hover {
+  background: #34495e;
+  border-color: #3498db;
+}
+
+.currency-symbol {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.currency-code {
+  font-weight: 500;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.currency-selector-button:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.currency-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2c3e50;
+  border: 1px solid #34495e;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.currency-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.currency-option:hover {
+  background: #34495e;
+}
+
+.currency-option.selected {
+  background: #3498db;
+  color: white;
+}
+
+.currency-option .currency-symbol {
+  font-weight: bold;
+  min-width: 20px;
+}
+
+.currency-option .currency-code {
+  font-weight: 500;
+  min-width: 40px;
+}
+
+.currency-option .currency-name {
+  font-size: 12px;
+  opacity: 0.8;
+  flex: 1;
+}
+
+/* Scrollbar styling for dropdown */
+.currency-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.currency-dropdown::-webkit-scrollbar-track {
+  background: #34495e;
+  border-radius: 3px;
+}
+
+.currency-dropdown::-webkit-scrollbar-thumb {
+  background: #3498db;
+  border-radius: 3px;
+}
+
+.currency-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #2980b9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .currency-selector-button {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+  
+  .currency-dropdown {
+    max-height: 250px;
+  }
+  
+  .currency-option {
+    padding: 8px 10px;
+  }
+  
+  .currency-option .currency-name {
+    font-size: 11px;
+  }
+} 

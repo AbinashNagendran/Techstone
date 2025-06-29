@@ -134,12 +134,10 @@ const processAIResponse = (response) => {
     const productRegex = new RegExp(`(${productTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     
     // Replace product mentions with enhanced versions including images and links
-    processedResponse = processedResponse.replace(productRegex, (match) => {
-      const price = product.salePrice > 0 ? product.salePrice : product.regularPrice;
+    processedResponse = processedResponse.replace(productRegex, () => {
       const priceText = product.salePrice > 0 
         ? `$${product.salePrice} (${Math.round(((product.regularPrice - product.salePrice) / product.regularPrice) * 100)}% OFF)`
         : `$${product.regularPrice}`;
-      
       return `
 <div class="product-mention">
   <div class="product-info">
@@ -160,8 +158,8 @@ const processAIResponse = (response) => {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     // Italic text: *text* -> <em>text</em>
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    // Bullet points: • -> proper list items
-    .replace(/^•\s*(.*)/gm, '<li>$1</li>')
+    // Bullet points: •, *, or - at line start -> proper list items
+    .replace(/^(?:•|\*|-)\s*(.*)/gm, '<li>$1</li>')
     // Convert consecutive list items to proper lists
     .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
     // Clean up multiple ul tags
