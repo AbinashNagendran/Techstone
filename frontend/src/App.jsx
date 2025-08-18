@@ -2,17 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar'
 import AIChat from './components/AIChat'
 import CurrencySelector from './components/CurrencySelector'
-import { statsData } from './data/statsData'
+import { mongoProducts } from './data/formatListings'
 import { convertProductPrices, formatPrice, getUserCurrency } from './services/currencyService'
 
 import './App.css'
 
 function App() {
   const [inputValue, setInputValue] = useState('');
-  const [filteredData, setFilteredData] = useState(statsData.flat());
+  const [filteredData, setFilteredData] = useState(mongoProducts);
   const [showAISearch, setShowAISearch] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [convertedData, setConvertedData] = useState(statsData);
+  const [convertedData, setConvertedData] = useState(mongoProducts);
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
@@ -52,7 +52,7 @@ What are you looking for today?`,
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           // Flatten all products from all stores and then filter
-          const allProducts = statsData.flat();
+          const allProducts = mongoProducts;
           const newFilteredData = allProducts.filter(stat =>
             stat.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -65,7 +65,7 @@ What are you looking for today?`,
 
   useEffect(() => {
     if (inputValue.trim() === '') {
-      setFilteredData(statsData.flat()); // Show all data if search is empty
+      setFilteredData(mongoProducts); // Show all data if search is empty
     } else {
       debouncedSearch(inputValue);
     }
@@ -74,7 +74,7 @@ What are you looking for today?`,
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       // Clear the timeout and search immediately
-      const allProducts = statsData.flat();
+      const allProducts = mongoProducts;
       const newFilteredData = allProducts.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
@@ -85,7 +85,7 @@ What are you looking for today?`,
   // Function to filter best sellers (rating >= 4.0)
   const filterBestSellers = () => {
     setShowAISearch(false); // Exit AI Search mode
-    const allProducts = statsData.flat();
+    const allProducts = mongoProducts;
     const bestSellers = allProducts.filter(stat => stat.rating >= 4.0);
     setFilteredData(bestSellers);
   };
@@ -93,7 +93,7 @@ What are you looking for today?`,
   // Function to show all products
   const showAllProducts = () => {
     setShowAISearch(false); // Exit AI Search mode
-    setFilteredData(statsData.flat());
+    setFilteredData(mongoProducts);
   };
 
   // Function to handle AI Search
@@ -168,7 +168,7 @@ What are you looking for today?`,
               <h4 className='welcome-subtitle'>Customize your search using the filters</h4>
               <div className="stats-grid">
                 {convertedData.map((stat) => (
-                  <div key={stat.id} className="stat-card">
+                  <div key={stat._id} className="stat-card">
                     {stat.salePrice > 0 && (
                       <img className="sale-image" src="/frontend_images/onSale.png" alt="Sale" />
                     )}
