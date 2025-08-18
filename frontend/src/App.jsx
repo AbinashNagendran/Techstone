@@ -2,17 +2,18 @@ import { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar'
 import AIChat from './components/AIChat'
 import CurrencySelector from './components/CurrencySelector'
-import { mongoProducts } from './data/formatListings'
 import { convertProductPrices, formatPrice, getUserCurrency } from './services/currencyService'
 
 import './App.css'
 
 function App() {
   const [inputValue, setInputValue] = useState('');
-  const [filteredData, setFilteredData] = useState(mongoProducts);
+  const [filteredData, setFilteredData] = useState([]);
   const [showAISearch, setShowAISearch] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [convertedData, setConvertedData] = useState(mongoProducts);
+  const [convertedData, setConvertedData] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
@@ -28,6 +29,22 @@ What are you looking for today?`,
       timestamp: new Date()
     }
   ]);
+
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        const data = await response.json();
+        setFilteredData(data);
+        setAllProducts(data);
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Initialize currency on component mount
   useEffect(() => {
@@ -51,8 +68,7 @@ What are you looking for today?`,
       return (searchTerm) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
-          // Flatten all products from all stores and then filter
-          const allProducts = mongoProducts;
+
           const newFilteredData = allProducts.filter(stat =>
             stat.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -60,12 +76,13 @@ What are you looking for today?`,
         }, 100); // waiting 100ms after user stops typing
       };
     })(),
-    []
+    [allProducts]
   );
 
   useEffect(() => {
     if (inputValue.trim() === '') {
-      setFilteredData(mongoProducts); // Show all data if search is empty
+      // refetch all products if search is empty
+      setFilteredData(allProducts);
     } else {
       debouncedSearch(inputValue);
     }
@@ -74,7 +91,6 @@ What are you looking for today?`,
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       // Clear the timeout and search immediately
-      const allProducts = mongoProducts;
       const newFilteredData = allProducts.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
@@ -85,7 +101,6 @@ What are you looking for today?`,
   // Function to filter best sellers (rating >= 4.0)
   const filterBestSellers = () => {
     setShowAISearch(false); // Exit AI Search mode
-    const allProducts = mongoProducts;
     const bestSellers = allProducts.filter(stat => stat.rating >= 4.0);
     setFilteredData(bestSellers);
   };
@@ -93,8 +108,10 @@ What are you looking for today?`,
   // Function to show all products
   const showAllProducts = () => {
     setShowAISearch(false); // Exit AI Search mode
-    setFilteredData(mongoProducts);
+    setFilteredData(allProducts);
+    
   };
+  
 
   // Function to handle AI Search
   const handleAISearch = () => {
@@ -161,6 +178,7 @@ What are you looking for today?`,
               messages={chatMessages}
               onMessagesChange={handleChatMessages}
               selectedCurrency={selectedCurrency}
+              products={allProducts}
             />
           ) : (
             <div className="welcome-card">

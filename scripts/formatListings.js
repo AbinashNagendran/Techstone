@@ -1,4 +1,8 @@
-import listingsData from '../../../scripts/listings.txt?raw';
+import fs from 'fs';
+import path from 'path';
+
+const listingsPath = path.join(process.cwd(), 'scripts', 'listings.txt');
+const listingsData = fs.readFileSync(listingsPath, 'utf-8');
 
 const parseListingDataToMongo = () => {
   try {

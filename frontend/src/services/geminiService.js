@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GEMINI_API_KEY, GEMINI_CONFIG, GEMINI_MODEL } from '../config/gemini.js';
-import { mongoProducts } from '../data/formatListings'
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -8,11 +7,11 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 // Create a model instance
 const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-// System prompt for the AI assistant
-const SYSTEM_PROMPT = `You are an AI shopping assistant for TechStone, a computer hardware store. You help users find the best pre-built computers based on their needs.
+// System prompt for the AI assistant - will be updated with actual products data
+const createSystemPrompt = (products) => `You are an AI shopping assistant for TechStone, a computer hardware store. You help users find the best pre-built computers based on their needs.
 
 Available products data:
-${JSON.stringify(mongoProducts, null, 2)}
+${JSON.stringify(products, null, 2)}
 
 Your capabilities:
 1. Filter products by price range (e.g., "PCs under $1500")
@@ -48,13 +47,13 @@ If no products match the criteria, suggest alternatives or ask for clarification
 let chatHistory = [];
 
 // Initialize chat
-export const initializeChat = async () => {
+export const initializeChat = async (products) => {
   try {
     const chat = model.startChat({
       history: [
         {
           role: 'user',
-          parts: [{ text: SYSTEM_PROMPT }],
+          parts: [{ text: createSystemPrompt(products) }],
         },
         {
           role: 'model',
@@ -72,13 +71,13 @@ export const initializeChat = async () => {
 };
 
 // Send message to AI and get response
-export const sendMessage = async (message) => {
+export const sendMessage = async (message, products) => {
   try {
     if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
       throw new Error('Please add your Gemini AI API key to the configuration file.');
     }
 
-    const chat = await initializeChat();
+    const chat = await initializeChat(products);
     
     // Add user message to history
     chatHistory.push({ role: 'user', content: message });
@@ -92,12 +91,12 @@ export const sendMessage = async (message) => {
     chatHistory.push({ role: 'assistant', content: text });
     
     // Process the response to enhance it with images and links
-    const enhancedResponse = processAIResponse(text);
+    const enhancedResponse = processAIResponse(text, products);
     
     return {
       success: true,
       message: enhancedResponse,
-      filteredProducts: extractProductsFromResponse(text)
+      filteredProducts: extractProductsFromResponse(text, products)
     };
     
   } catch (error) {
@@ -123,11 +122,11 @@ export const sendMessage = async (message) => {
 };
 
 // Process AI response to add images and format links
-const processAIResponse = (response) => {
+const processAIResponse = (response, products) => {
   let processedResponse = response;
   
   // Find all products mentioned in the response
-  mongoProducts.forEach(product => {
+  products.forEach(product => {
     const productTitle = product.title;
     
     // Create a regex to match the product title (case insensitive)
@@ -171,27 +170,27 @@ const processAIResponse = (response) => {
 };
 
 // Extract product information from AI response
-const extractProductsFromResponse = (response) => {
-  const products = [];
+const extractProductsFromResponse = (response, products) => {
+  const filteredProducts = [];
   
   // Look for product titles in the response
-  mongoProducts.forEach(product => {
+  products.forEach(product => {
     if (response.toLowerCase().includes(product.title.toLowerCase())) {
-      products.push(product);
+      filteredProducts.push(product);
     }
   });
   
-  return products;
+  return filteredProducts;
 };
 
 // Filter products based on AI criteria
-export const filterProductsByAI = async (criteria) => {
+export const filterProductsByAI = async (criteria, products) => {
   try {
     const prompt = `Filter the available products based on this criteria: "${criteria}". 
     Return only the products that match, with their names, prices, and links. 
     If no products match exactly, suggest the closest alternatives.`;
     
-    const result = await sendMessage(prompt);
+    const result = await sendMessage(prompt, products);
     return result;
     
   } catch (error) {
@@ -205,12 +204,12 @@ export const filterProductsByAI = async (criteria) => {
 };
 
 // Get product recommendations
-export const getRecommendations = async (userNeeds) => {
+export const getRecommendations = async (userNeeds, products) => {
   try {
     const prompt = `Based on these user needs: "${userNeeds}", recommend the best 3-5 products from our inventory. 
     Explain why each product is a good choice and provide their prices and links.`;
     
-    const result = await sendMessage(prompt);
+    const result = await sendMessage(prompt, products);
     return result;
     
   } catch (error) {
