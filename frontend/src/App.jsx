@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar'
 import AIChat from './components/AIChat'
 import CurrencySelector from './components/CurrencySelector'
 import { convertProductPrices, formatPrice, getUserCurrency } from './services/currencyService'
+import { AWS_LAMBDA_URL } from '../src/config/awsLambda'
 
 import './App.css'
 
@@ -35,7 +36,7 @@ What are you looking for today?`,
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(AWS_LAMBDA_URL);
         const data = await response.json();
         setFilteredData(data);
         setAllProducts(data);
