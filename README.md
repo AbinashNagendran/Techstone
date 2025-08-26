@@ -8,10 +8,11 @@ This is the point of TechStone, having a collection of popular websites for pre-
 This project combines Best Buy, Canada Computers, and Memory Express. The website will show approximately 200 listings 
 
 We implemented the following features:
-Website receives new listings daily 
-Filter/search for best sellers
-Able to change to most currencies 
-AI Chatbox for assistance
+
+- Website receives new listings daily 
+- Filter/search for best sellers
+- Able to change to most currencies 
+- AI Chatbox for assistance
 
 
 
