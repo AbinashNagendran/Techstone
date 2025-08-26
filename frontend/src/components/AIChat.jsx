@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendMessage, clearChatHistory } from '../services/geminiService.js';
 
-const AIChat = ({ onProductsFiltered, messages, onMessagesChange, selectedCurrency = 'USD' }) => {
+const AIChat = ({ onProductsFiltered, messages, onMessagesChange, selectedCurrency = 'USD', products = [] }) => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -53,7 +53,7 @@ const AIChat = ({ onProductsFiltered, messages, onMessagesChange, selectedCurren
 
       // Send message to AI with currency context
       const messageWithCurrency = `${inputValue.trim()} (Please show prices in ${selectedCurrency})`;
-      const response = await sendMessage(messageWithCurrency);
+      const response = await sendMessage(messageWithCurrency, products);
 
       // Remove loading message and add AI response
       const messagesWithoutLoading = messagesWithLoading.filter(msg => !msg.isLoading);

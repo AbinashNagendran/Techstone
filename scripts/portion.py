@@ -11,8 +11,8 @@ import requests
 import json
 from pathlib import Path
 
-
-
+# this web scraper was used to locally scrape but not used anymore since we moved to awsLambda 
+# Can be used as of August 25th (Websites tend to change html tags a lot)
 
 driver = webdriver.Chrome()
 driver2 = webdriver.Chrome()
@@ -89,7 +89,7 @@ try:
         a3.append(img)
         a2.append(a3)
     json_converted = json.dumps(a2)
-    with open("scripts/listings.txt", "w", encoding="utf-8") as f:
+    with open("listings.txt", "w", encoding="utf-8") as f:
         f.write(str(json_converted))
         f.write("\n\n\n")
     f.close()
@@ -178,7 +178,7 @@ try:
         a3.append(int(reviews))
         a2.append(a3)
     json_converted = json.dumps(a2)
-    with open("scripts/listings.txt", "a") as f:
+    with open("listings.txt", "a") as f:
         f.write(str(json_converted))
         f.write("\n\n\n")
     f.close()
@@ -316,7 +316,7 @@ for i in a:
     a6.append(a3)
     #print(a1)
 json_converted = json.dumps(a6)
-with open("scripts/listings.txt", "a") as f:
+with open("listings.txt", "a") as f:
     f.write(str(json_converted))
     f.write("\n\n\n")
 f.close()

@@ -2,17 +2,19 @@ import { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar'
 import AIChat from './components/AIChat'
 import CurrencySelector from './components/CurrencySelector'
-import { statsData } from './data/statsData'
 import { convertProductPrices, formatPrice, getUserCurrency } from './services/currencyService'
+import { AWS_LAMBDA_URL } from '../src/config/awsLambda'
 
 import './App.css'
 
 function App() {
   const [inputValue, setInputValue] = useState('');
-  const [filteredData, setFilteredData] = useState(statsData.flat());
+  const [filteredData, setFilteredData] = useState([]);
   const [showAISearch, setShowAISearch] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [convertedData, setConvertedData] = useState(statsData);
+  const [convertedData, setConvertedData] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
@@ -28,6 +30,22 @@ What are you looking for today?`,
       timestamp: new Date()
     }
   ]);
+
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(AWS_LAMBDA_URL);
+        const data = await response.json();
+        setFilteredData(data);
+        setAllProducts(data);
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Initialize currency on component mount
   useEffect(() => {
@@ -51,8 +69,7 @@ What are you looking for today?`,
       return (searchTerm) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
-          // Flatten all products from all stores and then filter
-          const allProducts = statsData.flat();
+
           const newFilteredData = allProducts.filter(stat =>
             stat.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -60,12 +77,13 @@ What are you looking for today?`,
         }, 100); // waiting 100ms after user stops typing
       };
     })(),
-    []
+    [allProducts]
   );
 
   useEffect(() => {
     if (inputValue.trim() === '') {
-      setFilteredData(statsData.flat()); // Show all data if search is empty
+      // refetch all products if search is empty
+      setFilteredData(allProducts);
     } else {
       debouncedSearch(inputValue);
     }
@@ -74,7 +92,6 @@ What are you looking for today?`,
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       // Clear the timeout and search immediately
-      const allProducts = statsData.flat();
       const newFilteredData = allProducts.filter(stat =>
         stat.title.toLowerCase().includes(inputValue.toLowerCase())
       );
@@ -85,7 +102,6 @@ What are you looking for today?`,
   // Function to filter best sellers (rating >= 4.0)
   const filterBestSellers = () => {
     setShowAISearch(false); // Exit AI Search mode
-    const allProducts = statsData.flat();
     const bestSellers = allProducts.filter(stat => stat.rating >= 4.0);
     setFilteredData(bestSellers);
   };
@@ -93,8 +109,10 @@ What are you looking for today?`,
   // Function to show all products
   const showAllProducts = () => {
     setShowAISearch(false); // Exit AI Search mode
-    setFilteredData(statsData.flat());
+    setFilteredData(allProducts);
+    
   };
+  
 
   // Function to handle AI Search
   const handleAISearch = () => {
@@ -161,6 +179,7 @@ What are you looking for today?`,
               messages={chatMessages}
               onMessagesChange={handleChatMessages}
               selectedCurrency={selectedCurrency}
+              products={allProducts}
             />
           ) : (
             <div className="welcome-card">
@@ -168,7 +187,7 @@ What are you looking for today?`,
               <h4 className='welcome-subtitle'>Customize your search using the filters</h4>
               <div className="stats-grid">
                 {convertedData.map((stat) => (
-                  <div key={stat.id} className="stat-card">
+                  <div key={stat._id} className="stat-card">
                     {stat.salePrice > 0 && (
                       <img className="sale-image" src="/frontend_images/onSale.png" alt="Sale" />
                     )}
