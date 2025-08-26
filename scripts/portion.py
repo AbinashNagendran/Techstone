@@ -11,8 +11,8 @@ import requests
 import json
 from pathlib import Path
 
-
-
+# this web scraper was used to locally scrape but not used anymore since we moved to awsLambda 
+# Can be used as of August 25th (Websites tend to change html tags a lot)
 
 driver = webdriver.Chrome()
 driver2 = webdriver.Chrome()
