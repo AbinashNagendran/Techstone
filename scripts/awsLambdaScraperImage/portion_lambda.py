@@ -61,7 +61,7 @@ def init_driver():
 # Doing this website multiple times triggers cloudflare so be careful, should go away the next day though
 def scrape_memory_express(driver):
     try:
-        # Add user agent and additional headers to appear more like a real browser
+        # Add user agent and additional headers 
         driver.execute_cdp_cmd('Network.setUserAgentOverride', {
             "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         })
@@ -154,14 +154,83 @@ def scrape_memory_express(driver):
                 else:
                     continue
                 
-                # Image extraction
-                img_element = item.find('img', alt="Product Image")
-                if img_element:
-                    img = img_element.get('src', '')
-                else:
-                    # Fallback image construction
-                    product_id = link.split('/')[-1] if '/' in link else ''
-                    img = f"https://media.memoryexpress.com/Images/Products/{product_id}/0?Size=Default" if product_id else ''
+
+                img = ''
+                
+                # Method 1: Look for the product image in the specific container
+                img_container = item.find('div', class_='c-shca-icon-item__body-image')
+                if img_container:
+                    img_element = img_container.find('img')  
+                    if img_element:
+                        img = (img_element.get('src') or 
+                               img_element.get('data-src') or 
+                               img_element.get('data-lazy-src') or '')
+                        
+                        
+                        if not img and img_element.get('srcset'):
+                            srcset = img_element.get('srcset')
+                            img = srcset.split(',')[0].split(' ')[0].strip()
+
+                # Method 2: Fallback - look for any img without alt restriction
+                if not img:
+                    img_element = item.find('img') 
+                    if img_element:
+                        potential_img = (img_element.get('src') or 
+                                        img_element.get('data-src') or 
+                                        img_element.get('data-lazy-src') or '')
+                        
+                        # Skip if brand logo or small icon
+                        if potential_img and '/Brands/' not in potential_img:
+                            img = potential_img
+
+                # Method 3: Look for any img tag that's not a brand logo or small icon
+                if not img:
+                    all_imgs = item.find_all('img')
+                    for img_tag in all_imgs:
+                        src_url = (img_tag.get('src') or 
+                                   img_tag.get('data-src') or 
+                                   img_tag.get('data-lazy-src') or '')
+                        
+                        if not src_url:
+                            continue
+                            
+                        # Skip brand logos and small icons
+                        if '/Brands/' in src_url:
+                            continue
+                            
+                        # Skip small images (likely icons or thumbnails)
+                        width = img_tag.get('width')
+                        height = img_tag.get('height')
+                        if width and width.isdigit() and int(width) < 100:
+                            continue
+                        if height and height.isdigit() and int(height) < 100:
+                            continue
+                            
+                        # Skip URLs that suggest small/icon images
+                        if any(pattern in src_url.lower() for pattern in ['icon', 'logo', 'thumb_', 'small', '_sm']):
+                            continue
+                        
+                        # This should be the product image
+                        img = src_url
+                        break
+
+                # Method 4: Construct from product ID as absolute fallback
+                if not img and link:
+                    if '/Products/' in link:
+                        product_id = link.split('/Products/')[1]
+                        if product_id:
+                            product_id = product_id.split('/')[0]
+                            img = f"https://media.memoryexpress.com/Images/Products/{product_id}/0?Size=Default"
+
+                # Clean up the URL
+                if img:
+                    img = img.strip()
+                    # Ensure it's a full URL
+                    if img and not img.startswith('http'):
+                        if img.startswith('//'):
+                            img = 'https:' + img
+                        elif img.startswith('/'):
+                            img = 'https://www.memoryexpress.com' + img
                 
                 # Regular price extraction
                 try:
