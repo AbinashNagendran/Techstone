@@ -27,9 +27,37 @@ AWS Elastic Container Registry
 
 
 
+
+
+
+<br>
+<br>
+<br>
+
+
+
 Here is what it looks like as of right now. 
 
 ![Project snapshot](snapshots/snapshot3.png)
+<br>
+<br>
+<br>
+Our Lambda Function for scraping
+<br>
+<img width="1057" height="410" alt="image" src="https://github.com/user-attachments/assets/bd177545-ba0f-4e6a-8c8b-c666380f51a4" />
+<br>
+<br>
+<br>
+
+We scrape every day at 12 am
+<br>
+<img width="495" height="307" alt="image" src="https://github.com/user-attachments/assets/a9d17a09-3eec-4290-baf0-9b526e0f0c15" />
+
+This is how one listing will look in a MongoDB collection
+<br>
+<img width="718" height="194" alt="image" src="https://github.com/user-attachments/assets/7c130496-dcd0-4125-9b00-05182e08d709" />
+
+
 
 # Setup 
 
@@ -44,4 +72,6 @@ Use EventBridge (optional) for scrape to whatever frequency you want. If you got
 security reasons, but it should be straightforward to fetch. 
 
 That should be it, but if there are any further complications, feel free to contact us. 
+
+
 
